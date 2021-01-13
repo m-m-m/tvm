@@ -7,8 +7,8 @@ image:https://travis-ci.com/m-m-m/tvm.svg?branch=master["build-status",link="htt
 
 image:https://img.shields.io/maven-central/v/io.github.m-m-m/mmm-tvm.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:io.github.m-m-m]
 
-The library `mmm-tvm` provides extensions to the classlib of <a href="https://teavm.org">TeaVM</a>" to fill gaps and lack of support.
-Examples are <a href="https://github.com/konsoletyper/teavm/issues/451>#451: Support for java.time</a> or <a href="https://github.com/konsoletyper/teavm/issues/445">#445: Support for ConcurrentHashMap</a>.
+The library `mmm-tvm` provides extensions to the classlib of https://teavm.org[TeaVM] to fill gaps and lack of support.
+Examples are https://github.com/konsoletyper/teavm/issues/451[#451: Support for java.time] or https://github.com/konsoletyper/teavm/issues/445[#445: Support for ConcurrentHashMap].
 This entire module is designed as a temporary workaround. We are trying to support the TeaVM project to properly support this out of the box.
 Once this is completed, we are happy to delete this repository and use vanilla release of TeaVM.
 
