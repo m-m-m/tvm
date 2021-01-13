@@ -1,0 +1,23 @@
+image:https://m-m-m.github.io/logo.svg[logo,width="150",link="https://m-m-m.github.io"]
+
+image:https://img.shields.io/github/license/m-m-m/tvm.svg?label=License["Apache License, Version 2.0",link=https://github.com/m-m-m/tvm/blob/master/LICENSE]
+image:https://travis-ci.com/m-m-m/tvm.svg?branch=master["build-status",link="https://travis-ci.com/m-m-m/tvm"]
+
+== mmm-tvm
+
+image:https://img.shields.io/maven-central/v/io.github.m-m-m/mmm-tvm.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:io.github.m-m-m]
+
+The library `mmm-tvm` provides extensions to the classlib of <a href="https://teavm.org">TeaVM</a>" to fill gaps and lack of support.
+Examples are <a href="https://github.com/konsoletyper/teavm/issues/451>#451: Support for java.time</a> or <a href="https://github.com/konsoletyper/teavm/issues/445">#445: Support for ConcurrentHashMap</a>.
+This entire module is designed as a temporary workaround. We are trying to support the TeaVM project to properly support this out of the box.
+Once this is completed, we are happy to delete this repository and use vanilla release of TeaVM.
+
+=== Usage
+
+Maven Dependency:
+```xml
+<dependency>
+  <groupId>io.github.m-m-m</groupId>
+  <artifactId>mmm-tvm</artifactId>
+</dependency>
+```
