@@ -7,10 +7,10 @@
     <artifactId>mmm-tvm-parent</artifactId>
     <version>${revision}${changelist}</version>
   </parent>
-  <artifactId>mmm-tvm-core</artifactId>
+  <artifactId>mmm-tvm-time</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <description>Classlib extensions to support ConcurrentHashMap, etc. in TeaVM.</description>
+  <description>Classlib extensions to support java.time in TeaVM.</description>
   
   <dependencies>
     <dependency>
