@@ -15,8 +15,6 @@
   <description>Classlib extension to workaround lacking support in TeaVM.</description>
 
   <properties>
-    <revision>1.0.0</revision>
-    <changelist>-SNAPSHOT</changelist>
     <mmm.repository>tvm</mmm.repository>
     <teavm.version>0.7.0-dev-1169</teavm.version>
   </properties>
