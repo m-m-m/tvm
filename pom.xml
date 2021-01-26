@@ -28,8 +28,13 @@
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>mmm-tvm</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>mmm-tvm-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mmm-tvm-time</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.teavm</groupId>
