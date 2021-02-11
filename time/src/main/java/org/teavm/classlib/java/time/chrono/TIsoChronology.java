@@ -73,6 +73,7 @@ import org.teavm.classlib.java.time.TDayOfWeek;
 import org.teavm.classlib.java.time.TInstant;
 import org.teavm.classlib.java.time.TLocalDate;
 import org.teavm.classlib.java.time.TLocalDateTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TMonth;
 import org.teavm.classlib.java.time.TYear;
 import org.teavm.classlib.java.time.TZoneId;
@@ -222,8 +223,8 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
       if (resolverStyle != TResolverStyle.LENIENT) {
         PROLEPTIC_MONTH.checkValidValue(prolepticMonth);
       }
-      updateResolveMap(fieldValues, MONTH_OF_YEAR, Math.floorMod(prolepticMonth, 12) + 1);
-      updateResolveMap(fieldValues, YEAR, Math.floorDiv(prolepticMonth, 12));
+      updateResolveMap(fieldValues, MONTH_OF_YEAR, TMath.floorMod(prolepticMonth, 12) + 1);
+      updateResolveMap(fieldValues, YEAR, TMath.floorDiv(prolepticMonth, 12));
     }
 
     // eras
@@ -238,19 +239,19 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
         if (resolverStyle == TResolverStyle.STRICT) {
           // do not invent era if strict, but do cross-check with year
           if (year != null) {
-            updateResolveMap(fieldValues, YEAR, (year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+            updateResolveMap(fieldValues, YEAR, (year > 0 ? yoeLong : TMath.subtractExact(1, yoeLong)));
           } else {
             // reinstate the field removed earlier, no cross-check issues
             fieldValues.put(YEAR_OF_ERA, yoeLong);
           }
         } else {
           // invent era
-          updateResolveMap(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+          updateResolveMap(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : TMath.subtractExact(1, yoeLong)));
         }
       } else if (era.longValue() == 1L) {
         updateResolveMap(fieldValues, YEAR, yoeLong);
       } else if (era.longValue() == 0L) {
-        updateResolveMap(fieldValues, YEAR, Math.subtractExact(1, yoeLong));
+        updateResolveMap(fieldValues, YEAR, TMath.subtractExact(1, yoeLong));
       } else {
         throw new TDateTimeException("Invalid value for era: " + era);
       }
@@ -263,18 +264,18 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
       if (fieldValues.containsKey(MONTH_OF_YEAR)) {
         if (fieldValues.containsKey(DAY_OF_MONTH)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
-          int moy = Math.toIntExact(fieldValues.remove(MONTH_OF_YEAR));
-          int dom = Math.toIntExact(fieldValues.remove(DAY_OF_MONTH));
+          int moy = TMath.toIntExact(fieldValues.remove(MONTH_OF_YEAR));
+          int dom = TMath.toIntExact(fieldValues.remove(DAY_OF_MONTH));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long months = Math.subtractExact(moy, 1);
-            long days = Math.subtractExact(dom, 1);
+            long months = TMath.subtractExact(moy, 1);
+            long days = TMath.subtractExact(dom, 1);
             return TLocalDate.of(y, 1, 1).plusMonths(months).plusDays(days);
           } else if (resolverStyle == TResolverStyle.SMART) {
             DAY_OF_MONTH.checkValidValue(dom);
             if (moy == 4 || moy == 6 || moy == 9 || moy == 11) {
-              dom = Math.min(dom, 30);
+              dom = TMath.min(dom, 30);
             } else if (moy == 2) {
-              dom = Math.min(dom, TMonth.FEBRUARY.length(TYear.isLeap(y)));
+              dom = TMath.min(dom, TMonth.FEBRUARY.length(TYear.isLeap(y)));
             }
             return TLocalDate.of(y, moy, dom);
           } else {
@@ -285,9 +286,9 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
           if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
               return TLocalDate.of(y, 1, 1).plusMonths(months).plusWeeks(weeks).plusDays(days);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -302,9 +303,9 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
           if (fieldValues.containsKey(DAY_OF_WEEK)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
               return TLocalDate.of(y, 1, 1).plusMonths(months).plusWeeks(weeks).plusDays(days);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -321,7 +322,7 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
       if (fieldValues.containsKey(DAY_OF_YEAR)) {
         int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
         if (resolverStyle == TResolverStyle.LENIENT) {
-          long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+          long days = TMath.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
           return TLocalDate.ofYearDay(y, 1).plusDays(days);
         }
         int doy = DAY_OF_YEAR.checkValidIntValue(fieldValues.remove(DAY_OF_YEAR));
@@ -331,8 +332,8 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
         if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
             return TLocalDate.of(y, 1, 1).plusWeeks(weeks).plusDays(days);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
@@ -346,8 +347,8 @@ public final class TIsoChronology extends TAbstractChronology implements TSerial
         if (fieldValues.containsKey(DAY_OF_WEEK)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
             return TLocalDate.of(y, 1, 1).plusWeeks(weeks).plusDays(days);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));

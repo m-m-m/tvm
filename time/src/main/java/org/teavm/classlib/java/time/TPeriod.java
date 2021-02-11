@@ -70,377 +70,375 @@ import org.teavm.classlib.java.time.temporal.TUnsupportedTemporalTypeException;
 
 public final class TPeriod implements TChronoPeriod, TSerializable {
 
-    public static final TPeriod ZERO = new TPeriod(0, 0, 0);
+  public static final TPeriod ZERO = new TPeriod(0, 0, 0);
 
-    private final static Pattern PATTERN = Pattern.compile(
-            "([-+]?)P(?:([-+]?[0-9]+)Y)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)W)?(?:([-+]?[0-9]+)D)?",
-            Pattern.CASE_INSENSITIVE);
+  private final static Pattern PATTERN = Pattern.compile(
+      "([-+]?)P(?:([-+]?[0-9]+)Y)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)W)?(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
 
-    private final int years;
+  private final int years;
 
-    private final int months;
+  private final int months;
 
-    private final int days;
+  private final int days;
 
-    public static TPeriod ofYears(int years) {
+  public static TPeriod ofYears(int years) {
 
-        return create(years, 0, 0);
+    return create(years, 0, 0);
+  }
+
+  public static TPeriod ofMonths(int months) {
+
+    return create(0, months, 0);
+  }
+
+  public static TPeriod ofWeeks(int weeks) {
+
+    return create(0, 0, TMath.multiplyExact(weeks, 7));
+  }
+
+  public static TPeriod ofDays(int days) {
+
+    return create(0, 0, days);
+  }
+
+  public static TPeriod of(int years, int months, int days) {
+
+    return create(years, months, days);
+  }
+
+  public static TPeriod from(TTemporalAmount amount) {
+
+    if (amount instanceof TPeriod) {
+      return (TPeriod) amount;
     }
-
-    public static TPeriod ofMonths(int months) {
-
-        return create(0, months, 0);
+    if (amount instanceof TChronoPeriod) {
+      if (TIsoChronology.INSTANCE.equals(((TChronoPeriod) amount).getChronology()) == false) {
+        throw new TDateTimeException("TPeriod requires ISO chronology: " + amount);
+      }
     }
-
-    public static TPeriod ofWeeks(int weeks) {
-
-        return create(0, 0, Math.multiplyExact(weeks, 7));
+    Objects.requireNonNull(amount, "amount");
+    int years = 0;
+    int months = 0;
+    int days = 0;
+    for (TTemporalUnit unit : amount.getUnits()) {
+      long unitAmount = amount.get(unit);
+      if (unit == TChronoUnit.YEARS) {
+        years = TMath.toIntExact(unitAmount);
+      } else if (unit == TChronoUnit.MONTHS) {
+        months = TMath.toIntExact(unitAmount);
+      } else if (unit == TChronoUnit.DAYS) {
+        days = TMath.toIntExact(unitAmount);
+      } else {
+        throw new TDateTimeException("Unit must be Years, Months or Days, but was " + unit);
+      }
     }
+    return create(years, months, days);
+  }
 
-    public static TPeriod ofDays(int days) {
+  public static TPeriod between(TLocalDate startDate, TLocalDate endDate) {
 
-        return create(0, 0, days);
-    }
+    return startDate.until(endDate);
+  }
 
-    public static TPeriod of(int years, int months, int days) {
+  public static TPeriod parse(CharSequence text) {
 
-        return create(years, months, days);
-    }
-
-    public static TPeriod from(TTemporalAmount amount) {
-
-        if (amount instanceof TPeriod) {
-            return (TPeriod) amount;
-        }
-        if (amount instanceof TChronoPeriod) {
-            if (TIsoChronology.INSTANCE.equals(((TChronoPeriod) amount).getChronology()) == false) {
-                throw new TDateTimeException("TPeriod requires ISO chronology: " + amount);
-            }
-        }
-        Objects.requireNonNull(amount, "amount");
-        int years = 0;
-        int months = 0;
-        int days = 0;
-        for (TTemporalUnit unit : amount.getUnits()) {
-            long unitAmount = amount.get(unit);
-            if (unit == TChronoUnit.YEARS) {
-                years = Math.toIntExact(unitAmount);
-            } else if (unit == TChronoUnit.MONTHS) {
-                months = Math.toIntExact(unitAmount);
-            } else if (unit == TChronoUnit.DAYS) {
-                days = Math.toIntExact(unitAmount);
-            } else {
-                throw new TDateTimeException("Unit must be Years, Months or Days, but was " + unit);
-            }
-        }
-        return create(years, months, days);
-    }
-
-    public static TPeriod between(TLocalDate startDate, TLocalDate endDate) {
-
-        return startDate.until(endDate);
-    }
-
-    public static TPeriod parse(CharSequence text) {
-
-        Objects.requireNonNull(text, "text");
-        Matcher matcher = PATTERN.matcher(text);
-        if (matcher.matches()) {
-            int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
-            String yearMatch = matcher.group(2);
-            String monthMatch = matcher.group(3);
-            String weekMatch = matcher.group(4);
-            String dayMatch = matcher.group(5);
-            if (yearMatch != null || monthMatch != null || weekMatch != null || dayMatch != null) {
-                try {
-                    int years = parseNumber(text, yearMatch, negate);
-                    int months = parseNumber(text, monthMatch, negate);
-                    int weeks = parseNumber(text, weekMatch, negate);
-                    int days = parseNumber(text, dayMatch, negate);
-                    days = Math.addExact(days, Math.multiplyExact(weeks, 7));
-                    return create(years, months, days);
-                } catch (NumberFormatException ex) {
-                    throw (TDateTimeParseException) new TDateTimeParseException("Text cannot be parsed to a TPeriod",
-                            text, 0).initCause(ex);
-                }
-            }
-        }
-        throw new TDateTimeParseException("Text cannot be parsed to a TPeriod", text, 0);
-    }
-
-    private static int parseNumber(CharSequence text, String str, int negate) {
-
-        if (str == null) {
-            return 0;
-        }
-        int val = Integer.parseInt(str);
+    Objects.requireNonNull(text, "text");
+    Matcher matcher = PATTERN.matcher(text);
+    if (matcher.matches()) {
+      int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
+      String yearMatch = matcher.group(2);
+      String monthMatch = matcher.group(3);
+      String weekMatch = matcher.group(4);
+      String dayMatch = matcher.group(5);
+      if (yearMatch != null || monthMatch != null || weekMatch != null || dayMatch != null) {
         try {
-            return Math.multiplyExact(val, negate);
-        } catch (ArithmeticException ex) {
-            throw (TDateTimeParseException) new TDateTimeParseException("Text cannot be parsed to a TPeriod", text, 0)
-                    .initCause(ex);
+          int years = parseNumber(text, yearMatch, negate);
+          int months = parseNumber(text, monthMatch, negate);
+          int weeks = parseNumber(text, weekMatch, negate);
+          int days = parseNumber(text, dayMatch, negate);
+          days = TMath.addExact(days, TMath.multiplyExact(weeks, 7));
+          return create(years, months, days);
+        } catch (NumberFormatException ex) {
+          throw (TDateTimeParseException) new TDateTimeParseException("Text cannot be parsed to a TPeriod", text, 0)
+              .initCause(ex);
         }
+      }
     }
+    throw new TDateTimeParseException("Text cannot be parsed to a TPeriod", text, 0);
+  }
 
-    private static TPeriod create(int years, int months, int days) {
+  private static int parseNumber(CharSequence text, String str, int negate) {
 
-        if ((years | months | days) == 0) {
-            return ZERO;
-        }
-        return new TPeriod(years, months, days);
+    if (str == null) {
+      return 0;
     }
-
-    private TPeriod(int years, int months, int days) {
-
-        this.years = years;
-        this.months = months;
-        this.days = days;
+    int val = Integer.parseInt(str);
+    try {
+      return TMath.multiplyExact(val, negate);
+    } catch (ArithmeticException ex) {
+      throw (TDateTimeParseException) new TDateTimeParseException("Text cannot be parsed to a TPeriod", text, 0)
+          .initCause(ex);
     }
+  }
 
-    @Override
-    public List<TTemporalUnit> getUnits() {
+  private static TPeriod create(int years, int months, int days) {
 
-        return Collections.<TTemporalUnit> unmodifiableList(Arrays.asList(YEARS, MONTHS, DAYS));
+    if ((years | months | days) == 0) {
+      return ZERO;
     }
+    return new TPeriod(years, months, days);
+  }
 
-    @Override
-    public TChronology getChronology() {
+  private TPeriod(int years, int months, int days) {
 
-        return TIsoChronology.INSTANCE;
+    this.years = years;
+    this.months = months;
+    this.days = days;
+  }
+
+  @Override
+  public List<TTemporalUnit> getUnits() {
+
+    return Collections.<TTemporalUnit> unmodifiableList(Arrays.asList(YEARS, MONTHS, DAYS));
+  }
+
+  @Override
+  public TChronology getChronology() {
+
+    return TIsoChronology.INSTANCE;
+  }
+
+  @Override
+  public long get(TTemporalUnit unit) {
+
+    if (unit == YEARS) {
+      return this.years;
     }
-
-    @Override
-    public long get(TTemporalUnit unit) {
-
-        if (unit == YEARS) {
-            return this.years;
-        }
-        if (unit == MONTHS) {
-            return this.months;
-        }
-        if (unit == DAYS) {
-            return this.days;
-        }
-        throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
+    if (unit == MONTHS) {
+      return this.months;
     }
-
-    @Override
-    public boolean isZero() {
-
-        return (this == ZERO);
+    if (unit == DAYS) {
+      return this.days;
     }
+    throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
+  }
 
-    @Override
-    public boolean isNegative() {
+  @Override
+  public boolean isZero() {
 
-        return this.years < 0 || this.months < 0 || this.days < 0;
+    return (this == ZERO);
+  }
+
+  @Override
+  public boolean isNegative() {
+
+    return this.years < 0 || this.months < 0 || this.days < 0;
+  }
+
+  public int getYears() {
+
+    return this.years;
+  }
+
+  public int getMonths() {
+
+    return this.months;
+  }
+
+  public int getDays() {
+
+    return this.days;
+  }
+
+  public TPeriod withYears(int years) {
+
+    if (years == this.years) {
+      return this;
     }
+    return create(years, this.months, this.days);
+  }
 
-    public int getYears() {
+  public TPeriod withMonths(int months) {
 
-        return this.years;
+    if (months == this.months) {
+      return this;
     }
+    return create(this.years, months, this.days);
+  }
 
-    public int getMonths() {
+  public TPeriod withDays(int days) {
 
-        return this.months;
+    if (days == this.days) {
+      return this;
     }
+    return create(this.years, this.months, days);
+  }
 
-    public int getDays() {
+  @Override
+  public TPeriod plus(TTemporalAmount amountToAdd) {
 
-        return this.days;
+    TPeriod amount = TPeriod.from(amountToAdd);
+    return create(TMath.addExact(this.years, amount.years), TMath.addExact(this.months, amount.months),
+        TMath.addExact(this.days, amount.days));
+  }
+
+  public TPeriod plusYears(long yearsToAdd) {
+
+    if (yearsToAdd == 0) {
+      return this;
     }
+    return create(TMath.toIntExact(TMath.addExact(this.years, yearsToAdd)), this.months, this.days);
+  }
 
-    public TPeriod withYears(int years) {
+  public TPeriod plusMonths(long monthsToAdd) {
 
-        if (years == this.years) {
-            return this;
-        }
-        return create(years, this.months, this.days);
+    if (monthsToAdd == 0) {
+      return this;
     }
+    return create(this.years, TMath.toIntExact(TMath.addExact(this.months, monthsToAdd)), this.days);
+  }
 
-    public TPeriod withMonths(int months) {
+  public TPeriod plusDays(long daysToAdd) {
 
-        if (months == this.months) {
-            return this;
-        }
-        return create(this.years, months, this.days);
+    if (daysToAdd == 0) {
+      return this;
     }
+    return create(this.years, this.months, TMath.toIntExact(TMath.addExact(this.days, daysToAdd)));
+  }
 
-    public TPeriod withDays(int days) {
+  @Override
+  public TPeriod minus(TTemporalAmount amountToSubtract) {
 
-        if (days == this.days) {
-            return this;
-        }
-        return create(this.years, this.months, days);
+    TPeriod amount = TPeriod.from(amountToSubtract);
+    return create(TMath.subtractExact(this.years, amount.years), TMath.subtractExact(this.months, amount.months),
+        TMath.subtractExact(this.days, amount.days));
+  }
+
+  public TPeriod minusYears(long yearsToSubtract) {
+
+    return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
+  }
+
+  public TPeriod minusMonths(long monthsToSubtract) {
+
+    return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1)
+        : plusMonths(-monthsToSubtract));
+  }
+
+  public TPeriod minusDays(long daysToSubtract) {
+
+    return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+  }
+
+  @Override
+  public TPeriod multipliedBy(int scalar) {
+
+    if (this == ZERO || scalar == 1) {
+      return this;
     }
+    return create(TMath.multiplyExact(this.years, scalar), TMath.multiplyExact(this.months, scalar),
+        TMath.multiplyExact(this.days, scalar));
+  }
 
-    @Override
-    public TPeriod plus(TTemporalAmount amountToAdd) {
+  @Override
+  public TPeriod negated() {
 
-        TPeriod amount = TPeriod.from(amountToAdd);
-        return create(Math.addExact(this.years, amount.years), Math.addExact(this.months, amount.months),
-                Math.addExact(this.days, amount.days));
+    return multipliedBy(-1);
+  }
+
+  @Override
+  public TPeriod normalized() {
+
+    long totalMonths = toTotalMonths();
+    long splitYears = totalMonths / 12;
+    int splitMonths = (int) (totalMonths % 12); // no overflow
+    if (splitYears == this.years && splitMonths == this.months) {
+      return this;
     }
+    return create(TMath.toIntExact(splitYears), splitMonths, this.days);
+  }
 
-    public TPeriod plusYears(long yearsToAdd) {
+  public long toTotalMonths() {
 
-        if (yearsToAdd == 0) {
-            return this;
-        }
-        return create(Math.toIntExact(Math.addExact(this.years, yearsToAdd)), this.months, this.days);
+    return this.years * 12L + this.months; // no overflow
+  }
+
+  @Override
+  public TTemporal addTo(TTemporal temporal) {
+
+    Objects.requireNonNull(temporal, "temporal");
+    if (this.years != 0) {
+      if (this.months != 0) {
+        temporal = temporal.plus(toTotalMonths(), MONTHS);
+      } else {
+        temporal = temporal.plus(this.years, YEARS);
+      }
+    } else if (this.months != 0) {
+      temporal = temporal.plus(this.months, MONTHS);
     }
-
-    public TPeriod plusMonths(long monthsToAdd) {
-
-        if (monthsToAdd == 0) {
-            return this;
-        }
-        return create(this.years, Math.toIntExact(Math.addExact(this.months, monthsToAdd)), this.days);
+    if (this.days != 0) {
+      temporal = temporal.plus(this.days, DAYS);
     }
+    return temporal;
+  }
 
-    public TPeriod plusDays(long daysToAdd) {
+  @Override
+  public TTemporal subtractFrom(TTemporal temporal) {
 
-        if (daysToAdd == 0) {
-            return this;
-        }
-        return create(this.years, this.months, Math.toIntExact(Math.addExact(this.days, daysToAdd)));
+    Objects.requireNonNull(temporal, "temporal");
+    if (this.years != 0) {
+      if (this.months != 0) {
+        temporal = temporal.minus(toTotalMonths(), MONTHS);
+      } else {
+        temporal = temporal.minus(this.years, YEARS);
+      }
+    } else if (this.months != 0) {
+      temporal = temporal.minus(this.months, MONTHS);
     }
-
-    @Override
-    public TPeriod minus(TTemporalAmount amountToSubtract) {
-
-        TPeriod amount = TPeriod.from(amountToSubtract);
-        return create(Math.subtractExact(this.years, amount.years), Math.subtractExact(this.months, amount.months),
-                Math.subtractExact(this.days, amount.days));
+    if (this.days != 0) {
+      temporal = temporal.minus(this.days, DAYS);
     }
+    return temporal;
+  }
 
-    public TPeriod minusYears(long yearsToSubtract) {
+  @Override
+  public boolean equals(Object obj) {
 
-        return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1)
-                : plusYears(-yearsToSubtract));
+    if (this == obj) {
+      return true;
     }
-
-    public TPeriod minusMonths(long monthsToSubtract) {
-
-        return (monthsToSubtract == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1)
-                : plusMonths(-monthsToSubtract));
+    if (obj instanceof TPeriod) {
+      TPeriod other = (TPeriod) obj;
+      return this.years == other.years && this.months == other.months && this.days == other.days;
     }
+    return false;
+  }
 
-    public TPeriod minusDays(long daysToSubtract) {
+  @Override
+  public int hashCode() {
 
-        return (daysToSubtract == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-daysToSubtract));
+    return this.years + Integer.rotateLeft(this.months, 8) + Integer.rotateLeft(this.days, 16);
+  }
+
+  @Override
+  public String toString() {
+
+    if (this == ZERO) {
+      return "P0D";
+    } else {
+      StringBuilder buf = new StringBuilder();
+      buf.append('P');
+      if (this.years != 0) {
+        buf.append(this.years).append('Y');
+      }
+      if (this.months != 0) {
+        buf.append(this.months).append('M');
+      }
+      if (this.days != 0) {
+        buf.append(this.days).append('D');
+      }
+      return buf.toString();
     }
-
-    @Override
-    public TPeriod multipliedBy(int scalar) {
-
-        if (this == ZERO || scalar == 1) {
-            return this;
-        }
-        return create(Math.multiplyExact(this.years, scalar), Math.multiplyExact(this.months, scalar),
-                Math.multiplyExact(this.days, scalar));
-    }
-
-    @Override
-    public TPeriod negated() {
-
-        return multipliedBy(-1);
-    }
-
-    @Override
-    public TPeriod normalized() {
-
-        long totalMonths = toTotalMonths();
-        long splitYears = totalMonths / 12;
-        int splitMonths = (int) (totalMonths % 12); // no overflow
-        if (splitYears == this.years && splitMonths == this.months) {
-            return this;
-        }
-        return create(Math.toIntExact(splitYears), splitMonths, this.days);
-    }
-
-    public long toTotalMonths() {
-
-        return this.years * 12L + this.months; // no overflow
-    }
-
-    @Override
-    public TTemporal addTo(TTemporal temporal) {
-
-        Objects.requireNonNull(temporal, "temporal");
-        if (this.years != 0) {
-            if (this.months != 0) {
-                temporal = temporal.plus(toTotalMonths(), MONTHS);
-            } else {
-                temporal = temporal.plus(this.years, YEARS);
-            }
-        } else if (this.months != 0) {
-            temporal = temporal.plus(this.months, MONTHS);
-        }
-        if (this.days != 0) {
-            temporal = temporal.plus(this.days, DAYS);
-        }
-        return temporal;
-    }
-
-    @Override
-    public TTemporal subtractFrom(TTemporal temporal) {
-
-        Objects.requireNonNull(temporal, "temporal");
-        if (this.years != 0) {
-            if (this.months != 0) {
-                temporal = temporal.minus(toTotalMonths(), MONTHS);
-            } else {
-                temporal = temporal.minus(this.years, YEARS);
-            }
-        } else if (this.months != 0) {
-            temporal = temporal.minus(this.months, MONTHS);
-        }
-        if (this.days != 0) {
-            temporal = temporal.minus(this.days, DAYS);
-        }
-        return temporal;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof TPeriod) {
-            TPeriod other = (TPeriod) obj;
-            return this.years == other.years && this.months == other.months && this.days == other.days;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-
-        return this.years + Integer.rotateLeft(this.months, 8) + Integer.rotateLeft(this.days, 16);
-    }
-
-    @Override
-    public String toString() {
-
-        if (this == ZERO) {
-            return "P0D";
-        } else {
-            StringBuilder buf = new StringBuilder();
-            buf.append('P');
-            if (this.years != 0) {
-                buf.append(this.years).append('Y');
-            }
-            if (this.months != 0) {
-                buf.append(this.months).append('M');
-            }
-            if (this.days != 0) {
-                buf.append(this.days).append('D');
-            }
-            return buf.toString();
-        }
-    }
+  }
 
 }

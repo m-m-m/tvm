@@ -259,13 +259,13 @@ public final class TYear implements TTemporal, TTemporalAdjuster, TComparable<TY
         case YEARS:
           return plusYears(amountToAdd);
         case DECADES:
-          return plusYears(Math.multiplyExact(amountToAdd, 10));
+          return plusYears(TMath.multiplyExact(amountToAdd, 10));
         case CENTURIES:
-          return plusYears(Math.multiplyExact(amountToAdd, 100));
+          return plusYears(TMath.multiplyExact(amountToAdd, 100));
         case MILLENNIA:
-          return plusYears(Math.multiplyExact(amountToAdd, 1000));
+          return plusYears(TMath.multiplyExact(amountToAdd, 1000));
         case ERAS:
-          return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
+          return with(ERA, TMath.addExact(getLong(ERA), amountToAdd));
       }
       throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }

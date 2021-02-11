@@ -57,6 +57,7 @@ import org.teavm.classlib.java.io.TSerializable;
 import org.teavm.classlib.java.time.TInstant;
 import org.teavm.classlib.java.time.TLocalDate;
 import org.teavm.classlib.java.time.TLocalDateTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TYear;
 import org.teavm.classlib.java.time.TZoneOffset;
 
@@ -427,7 +428,7 @@ public final class TStandardZoneRules extends TZoneRules implements TSerializabl
 
     // inline for performance
     long localSecond = epochSecond + offset.getTotalSeconds();
-    long localEpochDay = Math.floorDiv(localSecond, 86400);
+    long localEpochDay = TMath.floorDiv(localSecond, 86400);
     return TLocalDate.ofEpochDay(localEpochDay).getYear();
   }
 

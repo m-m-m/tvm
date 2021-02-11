@@ -93,17 +93,17 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
 
   public static TDuration ofDays(long days) {
 
-    return create(Math.multiplyExact(days, 86400), 0);
+    return create(TMath.multiplyExact(days, 86400), 0);
   }
 
   public static TDuration ofHours(long hours) {
 
-    return create(Math.multiplyExact(hours, 3600), 0);
+    return create(TMath.multiplyExact(hours, 3600), 0);
   }
 
   public static TDuration ofMinutes(long minutes) {
 
-    return create(Math.multiplyExact(minutes, 60), 0);
+    return create(TMath.multiplyExact(minutes, 60), 0);
   }
 
   public static TDuration ofSeconds(long seconds) {
@@ -113,8 +113,8 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
 
   public static TDuration ofSeconds(long seconds, long nanoAdjustment) {
 
-    long secs = Math.addExact(seconds, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-    int nos = Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+    long secs = TMath.addExact(seconds, TMath.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+    int nos = TMath.floorMod(nanoAdjustment, NANOS_PER_SECOND);
     return create(secs, nos);
   }
 
@@ -225,7 +225,7 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
         parsed = parsed.substring(1);
       }
       long val = Long.parseLong(parsed);
-      return Math.multiplyExact(val, multiplier);
+      return TMath.multiplyExact(val, multiplier);
     } catch (NumberFormatException ex) {
       throw (TDateTimeParseException) new TDateTimeParseException("Text cannot be parsed to a TDuration: " + errorText,
           text, 0).initCause(ex);
@@ -256,7 +256,7 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
   private static TDuration create(boolean negate, long daysAsSecs, long hoursAsSecs, long minsAsSecs, long secs,
       int nanos) {
 
-    long seconds = Math.addExact(daysAsSecs, Math.addExact(hoursAsSecs, Math.addExact(minsAsSecs, secs)));
+    long seconds = TMath.addExact(daysAsSecs, TMath.addExact(hoursAsSecs, TMath.addExact(minsAsSecs, secs)));
     if (negate) {
       return ofSeconds(seconds, nanos).negated();
     }
@@ -336,7 +336,7 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
 
     Objects.requireNonNull(unit, "unit");
     if (unit == DAYS) {
-      return plus(Math.multiplyExact(amountToAdd, SECONDS_PER_DAY), 0);
+      return plus(TMath.multiplyExact(amountToAdd, SECONDS_PER_DAY), 0);
     }
     if (unit.isDurationEstimated()) {
       throw new TDateTimeException("Unit must not have an estimated duration");
@@ -356,7 +356,7 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
         case SECONDS:
           return plusSeconds(amountToAdd);
       }
-      return plusSeconds(Math.multiplyExact(unit.getDuration().seconds, amountToAdd));
+      return plusSeconds(TMath.multiplyExact(unit.getDuration().seconds, amountToAdd));
     }
     TDuration duration = unit.getDuration().multipliedBy(amountToAdd);
     return plusSeconds(duration.getSeconds()).plusNanos(duration.getNano());
@@ -364,17 +364,17 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
 
   public TDuration plusDays(long daysToAdd) {
 
-    return plus(Math.multiplyExact(daysToAdd, SECONDS_PER_DAY), 0);
+    return plus(TMath.multiplyExact(daysToAdd, SECONDS_PER_DAY), 0);
   }
 
   public TDuration plusHours(long hoursToAdd) {
 
-    return plus(Math.multiplyExact(hoursToAdd, SECONDS_PER_HOUR), 0);
+    return plus(TMath.multiplyExact(hoursToAdd, SECONDS_PER_HOUR), 0);
   }
 
   public TDuration plusMinutes(long minutesToAdd) {
 
-    return plus(Math.multiplyExact(minutesToAdd, SECONDS_PER_MINUTE), 0);
+    return plus(TMath.multiplyExact(minutesToAdd, SECONDS_PER_MINUTE), 0);
   }
 
   public TDuration plusSeconds(long secondsToAdd) {
@@ -397,8 +397,8 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
     if ((secondsToAdd | nanosToAdd) == 0) {
       return this;
     }
-    long epochSec = Math.addExact(this.seconds, secondsToAdd);
-    epochSec = Math.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
+    long epochSec = TMath.addExact(this.seconds, secondsToAdd);
+    epochSec = TMath.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
     nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
     long nanoAdjustment = this.nanos + nanosToAdd; // safe int+NANOS_PER_SECOND
     return ofSeconds(epochSec, nanoAdjustment);
@@ -541,15 +541,15 @@ public final class TDuration implements TTemporalAmount, Comparable<TDuration>, 
 
   public long toMillis() {
 
-    long result = Math.multiplyExact(this.seconds, 1000);
-    result = Math.addExact(result, this.nanos / NANOS_PER_MILLI);
+    long result = TMath.multiplyExact(this.seconds, 1000);
+    result = TMath.addExact(result, this.nanos / NANOS_PER_MILLI);
     return result;
   }
 
   public long toNanos() {
 
-    long result = Math.multiplyExact(this.seconds, NANOS_PER_SECOND);
-    result = Math.addExact(result, this.nanos);
+    long result = TMath.multiplyExact(this.seconds, NANOS_PER_SECOND);
+    result = TMath.addExact(result, this.nanos);
     return result;
   }
 

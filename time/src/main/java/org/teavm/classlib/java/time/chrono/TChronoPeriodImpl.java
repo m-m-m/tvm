@@ -57,6 +57,7 @@ import java.util.Objects;
 
 import org.teavm.classlib.java.io.TSerializable;
 import org.teavm.classlib.java.time.TDateTimeException;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.temporal.TChronoField;
 import org.teavm.classlib.java.time.temporal.TTemporal;
 import org.teavm.classlib.java.time.temporal.TTemporalAmount;
@@ -115,8 +116,8 @@ final class TChronoPeriodImpl implements TChronoPeriod, TSerializable {
     if (amountToAdd instanceof TChronoPeriodImpl) {
       TChronoPeriodImpl amount = (TChronoPeriodImpl) amountToAdd;
       if (amount.getChronology().equals(getChronology())) {
-        return new TChronoPeriodImpl(this.chronology, Math.addExact(this.years, amount.years),
-            Math.addExact(this.months, amount.months), Math.addExact(this.days, amount.days));
+        return new TChronoPeriodImpl(this.chronology, TMath.addExact(this.years, amount.years),
+            TMath.addExact(this.months, amount.months), TMath.addExact(this.days, amount.days));
       }
     }
     throw new TDateTimeException("Unable to add amount: " + amountToAdd);
@@ -128,8 +129,8 @@ final class TChronoPeriodImpl implements TChronoPeriod, TSerializable {
     if (amountToSubtract instanceof TChronoPeriodImpl) {
       TChronoPeriodImpl amount = (TChronoPeriodImpl) amountToSubtract;
       if (amount.getChronology().equals(getChronology())) {
-        return new TChronoPeriodImpl(this.chronology, Math.subtractExact(this.years, amount.years),
-            Math.subtractExact(this.months, amount.months), Math.subtractExact(this.days, amount.days));
+        return new TChronoPeriodImpl(this.chronology, TMath.subtractExact(this.years, amount.years),
+            TMath.subtractExact(this.months, amount.months), TMath.subtractExact(this.days, amount.days));
       }
     }
     throw new TDateTimeException("Unable to subtract amount: " + amountToSubtract);
@@ -138,8 +139,8 @@ final class TChronoPeriodImpl implements TChronoPeriod, TSerializable {
   @Override
   public TChronoPeriod multipliedBy(int scalar) {
 
-    return new TChronoPeriodImpl(this.chronology, Math.multiplyExact(this.years, scalar),
-        Math.multiplyExact(this.months, scalar), Math.multiplyExact(this.days, scalar));
+    return new TChronoPeriodImpl(this.chronology, TMath.multiplyExact(this.years, scalar),
+        TMath.multiplyExact(this.months, scalar), TMath.multiplyExact(this.days, scalar));
   }
 
   @Override
@@ -149,8 +150,8 @@ final class TChronoPeriodImpl implements TChronoPeriod, TSerializable {
       long monthLength = this.chronology.range(TChronoField.MONTH_OF_YEAR).getMaximum()
           - this.chronology.range(TChronoField.MONTH_OF_YEAR).getMinimum() + 1;
       long total = this.years * monthLength + this.months;
-      int years = Math.toIntExact(total / monthLength);
-      int months = Math.toIntExact(total % monthLength);
+      int years = TMath.toIntExact(total / monthLength);
+      int months = TMath.toIntExact(total % monthLength);
       return new TChronoPeriodImpl(this.chronology, years, months, this.days);
     }
     return this;

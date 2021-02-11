@@ -125,15 +125,15 @@ public final class TInstant
 
   public static TInstant ofEpochSecond(long epochSecond, long nanoAdjustment) {
 
-    long secs = Math.addExact(epochSecond, Math.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
-    int nos = Math.floorMod(nanoAdjustment, NANOS_PER_SECOND);
+    long secs = TMath.addExact(epochSecond, TMath.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+    int nos = TMath.floorMod(nanoAdjustment, NANOS_PER_SECOND);
     return create(secs, nos);
   }
 
   public static TInstant ofEpochMilli(long epochMilli) {
 
-    long secs = Math.floorDiv(epochMilli, 1000);
-    int mos = Math.floorMod(epochMilli, 1000);
+    long secs = TMath.floorDiv(epochMilli, 1000);
+    int mos = TMath.floorMod(epochMilli, 1000);
     return create(secs, mos * NANOS_PER_MILLI);
   }
 
@@ -220,7 +220,7 @@ public final class TInstant
     int year = yearParsed % 10_000;
     TLocalDateTime ldt = TLocalDateTime.of(year, month, day, hour, min, sec, 0).plusDays(days);
     long epochSeconds = ldt.toEpochSecond(TZoneOffset.UTC);
-    epochSeconds += Math.multiplyExact(yearParsed / 10_000L, SECONDS_PER_10000_YEARS);
+    epochSeconds += TMath.multiplyExact(yearParsed / 10_000L, SECONDS_PER_10000_YEARS);
 
     return new TInstant(epochSeconds, nanoOfSecond);
   }
@@ -353,7 +353,7 @@ public final class TInstant
       throw new TDateTimeException("Unit must divide into a standard day without remainder");
     }
     long nod = (this.seconds % TLocalTime.SECONDS_PER_DAY) * TLocalTime.NANOS_PER_SECOND + this.nanos;
-    long result = Math.floorDiv(nod, dur) * dur;
+    long result = TMath.floorDiv(nod, dur) * dur;
     return plusNanos(result - nod);
   }
 
@@ -377,13 +377,13 @@ public final class TInstant
         case SECONDS:
           return plusSeconds(amountToAdd);
         case MINUTES:
-          return plusSeconds(Math.multiplyExact(amountToAdd, SECONDS_PER_MINUTE));
+          return plusSeconds(TMath.multiplyExact(amountToAdd, SECONDS_PER_MINUTE));
         case HOURS:
-          return plusSeconds(Math.multiplyExact(amountToAdd, SECONDS_PER_HOUR));
+          return plusSeconds(TMath.multiplyExact(amountToAdd, SECONDS_PER_HOUR));
         case HALF_DAYS:
-          return plusSeconds(Math.multiplyExact(amountToAdd, SECONDS_PER_DAY / 2));
+          return plusSeconds(TMath.multiplyExact(amountToAdd, SECONDS_PER_DAY / 2));
         case DAYS:
-          return plusSeconds(Math.multiplyExact(amountToAdd, SECONDS_PER_DAY));
+          return plusSeconds(TMath.multiplyExact(amountToAdd, SECONDS_PER_DAY));
       }
       throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -410,8 +410,8 @@ public final class TInstant
     if ((secondsToAdd | nanosToAdd) == 0) {
       return this;
     }
-    long epochSec = Math.addExact(this.seconds, secondsToAdd);
-    epochSec = Math.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
+    long epochSec = TMath.addExact(this.seconds, secondsToAdd);
+    epochSec = TMath.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
     nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
     long nanoAdjustment = this.nanos + nanosToAdd; // safe int+NANOS_PER_SECOND
     return ofEpochSecond(epochSec, nanoAdjustment);
@@ -488,7 +488,7 @@ public final class TInstant
         case MICROS:
           return nanosUntil(end) / 1000;
         case MILLIS:
-          return Math.subtractExact(end.toEpochMilli(), toEpochMilli());
+          return TMath.subtractExact(end.toEpochMilli(), toEpochMilli());
         case SECONDS:
           return secondsUntil(end);
         case MINUTES:
@@ -507,14 +507,14 @@ public final class TInstant
 
   private long nanosUntil(TInstant end) {
 
-    long secsDiff = Math.subtractExact(end.seconds, this.seconds);
-    long totalNanos = Math.multiplyExact(secsDiff, NANOS_PER_SECOND);
-    return Math.addExact(totalNanos, end.nanos - this.nanos);
+    long secsDiff = TMath.subtractExact(end.seconds, this.seconds);
+    long totalNanos = TMath.multiplyExact(secsDiff, NANOS_PER_SECOND);
+    return TMath.addExact(totalNanos, end.nanos - this.nanos);
   }
 
   private long secondsUntil(TInstant end) {
 
-    long secsDiff = Math.subtractExact(end.seconds, this.seconds);
+    long secsDiff = TMath.subtractExact(end.seconds, this.seconds);
     long nanosDiff = end.nanos - this.nanos;
     if (secsDiff > 0 && nanosDiff < 0) {
       secsDiff--;
@@ -537,8 +537,8 @@ public final class TInstant
   public long toEpochMilli() {
 
     if (this.seconds >= 0) {
-      long millis = Math.multiplyExact(this.seconds, MILLIS_PER_SEC);
-      return Math.addExact(millis, this.nanos / NANOS_PER_MILLI);
+      long millis = TMath.multiplyExact(this.seconds, MILLIS_PER_SEC);
+      return TMath.addExact(millis, this.nanos / NANOS_PER_MILLI);
     } else {
       // prevent an overflow in seconds * 1000
       // instead of going form the second farther away from 0
@@ -546,8 +546,8 @@ public final class TInstant
       // we go from the second closer to 0 away from 0
       // that way we always stay in the valid long range
       // seconds + 1 can not overflow because it is negative
-      long millis = Math.multiplyExact(this.seconds + 1, MILLIS_PER_SEC);
-      return Math.subtractExact(millis, (MILLIS_PER_SEC - this.nanos / NANOS_PER_MILLI));
+      long millis = TMath.multiplyExact(this.seconds + 1, MILLIS_PER_SEC);
+      return TMath.subtractExact(millis, (MILLIS_PER_SEC - this.nanos / NANOS_PER_MILLI));
     }
   }
 
@@ -595,8 +595,8 @@ public final class TInstant
 
     StringBuilder sb = new StringBuilder(32);
     long zeroSecs = this.seconds - SECONDS_PER_10000_YEARS + SECONDS_0000_TO_1970;
-    long hi = Math.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
-    long lo = Math.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
+    long hi = TMath.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
+    long lo = TMath.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
     TLocalDateTime ldt = TLocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, 0, TZoneOffset.UTC);
     if (hi > 0) {
       sb.append('+').append(hi);

@@ -56,6 +56,7 @@ import org.teavm.classlib.java.time.TDayOfWeek;
 import org.teavm.classlib.java.time.TLocalDate;
 import org.teavm.classlib.java.time.TLocalDateTime;
 import org.teavm.classlib.java.time.TLocalTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TMonth;
 import org.teavm.classlib.java.time.TZoneOffset;
 import org.teavm.classlib.java.time.chrono.TIsoChronology;
@@ -238,9 +239,9 @@ public final class TZoneOffsetTransitionRule implements TSerializable {
       buf.append(this.time);
     } else {
       long timeOfDaysMins = this.time.toSecondOfDay() / 60 + this.adjustDays * 24 * 60;
-      appendZeroPad(buf, Math.floorDiv(timeOfDaysMins, 60));
+      appendZeroPad(buf, TMath.floorDiv(timeOfDaysMins, 60));
       buf.append(':');
-      appendZeroPad(buf, Math.floorMod(timeOfDaysMins, 60));
+      appendZeroPad(buf, TMath.floorMod(timeOfDaysMins, 60));
     }
     buf.append(" ").append(this.timeDefinition).append(", standard offset ").append(this.standardOffset).append(']');
     return buf.toString();

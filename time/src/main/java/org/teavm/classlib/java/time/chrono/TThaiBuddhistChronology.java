@@ -76,6 +76,7 @@ import org.teavm.classlib.java.time.TDateTimeException;
 import org.teavm.classlib.java.time.TDayOfWeek;
 import org.teavm.classlib.java.time.TInstant;
 import org.teavm.classlib.java.time.TLocalDate;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TZoneId;
 import org.teavm.classlib.java.time.format.TResolverStyle;
 import org.teavm.classlib.java.time.temporal.TChronoField;
@@ -264,8 +265,8 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
       if (resolverStyle != TResolverStyle.LENIENT) {
         PROLEPTIC_MONTH.checkValidValue(prolepticMonth);
       }
-      updateResolveMap(fieldValues, MONTH_OF_YEAR, Math.floorMod(prolepticMonth, 12) + 1);
-      updateResolveMap(fieldValues, YEAR, Math.floorDiv(prolepticMonth, 12));
+      updateResolveMap(fieldValues, MONTH_OF_YEAR, TMath.floorMod(prolepticMonth, 12) + 1);
+      updateResolveMap(fieldValues, YEAR, TMath.floorDiv(prolepticMonth, 12));
     }
 
     // eras
@@ -280,19 +281,19 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
         if (resolverStyle == TResolverStyle.STRICT) {
           // do not invent era if strict, but do cross-check with year
           if (year != null) {
-            updateResolveMap(fieldValues, YEAR, (year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+            updateResolveMap(fieldValues, YEAR, (year > 0 ? yoeLong : TMath.subtractExact(1, yoeLong)));
           } else {
             // reinstate the field removed earlier, no cross-check issues
             fieldValues.put(YEAR_OF_ERA, yoeLong);
           }
         } else {
           // invent era
-          updateResolveMap(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+          updateResolveMap(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : TMath.subtractExact(1, yoeLong)));
         }
       } else if (era.longValue() == 1L) {
         updateResolveMap(fieldValues, YEAR, yoeLong);
       } else if (era.longValue() == 0L) {
-        updateResolveMap(fieldValues, YEAR, Math.subtractExact(1, yoeLong));
+        updateResolveMap(fieldValues, YEAR, TMath.subtractExact(1, yoeLong));
       } else {
         throw new TDateTimeException("Invalid value for era: " + era);
       }
@@ -306,14 +307,14 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
         if (fieldValues.containsKey(DAY_OF_MONTH)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
+            long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
             return date(y, 1, 1).plusMonths(months).plusDays(days);
           } else {
             int moy = range(MONTH_OF_YEAR).checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR), MONTH_OF_YEAR);
             int dom = range(DAY_OF_MONTH).checkValidIntValue(fieldValues.remove(DAY_OF_MONTH), DAY_OF_MONTH);
             if (resolverStyle == TResolverStyle.SMART && dom > 28) {
-              dom = Math.min(dom, date(y, moy, 1).lengthOfMonth());
+              dom = TMath.min(dom, date(y, moy, 1).lengthOfMonth());
             }
             return date(y, moy, dom);
           }
@@ -322,9 +323,9 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
           if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
               return date(y, 1, 1).plus(months, MONTHS).plus(weeks, WEEKS).plus(days, DAYS);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -339,9 +340,9 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
           if (fieldValues.containsKey(DAY_OF_WEEK)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
               return date(y, 1, 1).plus(months, MONTHS).plus(weeks, WEEKS).plus(days, DAYS);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -358,7 +359,7 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
       if (fieldValues.containsKey(DAY_OF_YEAR)) {
         int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
         if (resolverStyle == TResolverStyle.LENIENT) {
-          long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+          long days = TMath.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
           return dateYearDay(y, 1).plusDays(days);
         }
         int doy = DAY_OF_YEAR.checkValidIntValue(fieldValues.remove(DAY_OF_YEAR));
@@ -368,8 +369,8 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
         if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
             return date(y, 1, 1).plus(weeks, WEEKS).plus(days, DAYS);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
@@ -383,8 +384,8 @@ public final class TThaiBuddhistChronology extends TAbstractChronology implement
         if (fieldValues.containsKey(DAY_OF_WEEK)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
             return date(y, 1, 1).plus(weeks, WEEKS).plus(days, DAYS);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));

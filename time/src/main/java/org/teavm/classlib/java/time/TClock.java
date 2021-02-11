@@ -298,7 +298,7 @@ public abstract class TClock {
     @Override
     public long millis() {
 
-      return Math.addExact(this.baseClock.millis(), this.offset.toMillis());
+      return TMath.addExact(this.baseClock.millis(), this.offset.toMillis());
     }
 
     @Override
@@ -362,7 +362,7 @@ public abstract class TClock {
     public long millis() {
 
       long millis = this.baseClock.millis();
-      return millis - Math.floorMod(millis, this.tickNanos / 1000000L);
+      return millis - TMath.floorMod(millis, this.tickNanos / 1000000L);
     }
 
     @Override
@@ -370,11 +370,11 @@ public abstract class TClock {
 
       if ((this.tickNanos % 1000000) == 0) {
         long millis = this.baseClock.millis();
-        return TInstant.ofEpochMilli(millis - Math.floorMod(millis, this.tickNanos / 1000000L));
+        return TInstant.ofEpochMilli(millis - TMath.floorMod(millis, this.tickNanos / 1000000L));
       }
       TInstant instant = this.baseClock.instant();
       long nanos = instant.getNano();
-      long adjust = Math.floorMod(nanos, this.tickNanos);
+      long adjust = TMath.floorMod(nanos, this.tickNanos);
       return instant.minusNanos(adjust);
     }
 

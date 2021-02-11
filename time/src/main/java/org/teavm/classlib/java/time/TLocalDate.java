@@ -122,7 +122,7 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
     final TInstant now = clock.instant(); // called once
     TZoneOffset offset = clock.getZone().getRules().getOffset(now);
     long epochSec = now.getEpochSecond() + offset.getTotalSeconds(); // overflow caught later
-    long epochDay = Math.floorDiv(epochSec, SECONDS_PER_DAY);
+    long epochDay = TMath.floorDiv(epochSec, SECONDS_PER_DAY);
     return TLocalDate.ofEpochDay(epochDay);
   }
 
@@ -256,13 +256,13 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
 
     switch (month) {
       case 2:
-        day = Math.min(day, TIsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+        day = TMath.min(day, TIsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
         break;
       case 4:
       case 6:
       case 9:
       case 11:
-        day = Math.min(day, 30);
+        day = TMath.min(day, 30);
         break;
     }
     return TLocalDate.of(year, month, day);
@@ -405,7 +405,7 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
 
   public TDayOfWeek getDayOfWeek() {
 
-    int dow0 = Math.floorMod(toEpochDay() + 3, 7);
+    int dow0 = TMath.floorMod(toEpochDay() + 3, 7);
     return TDayOfWeek.of(dow0 + 1);
   }
 
@@ -541,13 +541,13 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
         case YEARS:
           return plusYears(amountToAdd);
         case DECADES:
-          return plusYears(Math.multiplyExact(amountToAdd, 10));
+          return plusYears(TMath.multiplyExact(amountToAdd, 10));
         case CENTURIES:
-          return plusYears(Math.multiplyExact(amountToAdd, 100));
+          return plusYears(TMath.multiplyExact(amountToAdd, 100));
         case MILLENNIA:
-          return plusYears(Math.multiplyExact(amountToAdd, 1000));
+          return plusYears(TMath.multiplyExact(amountToAdd, 1000));
         case ERAS:
-          return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
+          return with(ERA, TMath.addExact(getLong(ERA), amountToAdd));
       }
       throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -570,14 +570,14 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
     }
     long monthCount = this.year * 12L + (this.month - 1);
     long calcMonths = monthCount + monthsToAdd; // safe overflow
-    int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
-    int newMonth = Math.floorMod(calcMonths, 12) + 1;
+    int newYear = YEAR.checkValidIntValue(TMath.floorDiv(calcMonths, 12));
+    int newMonth = TMath.floorMod(calcMonths, 12) + 1;
     return resolvePreviousValid(newYear, newMonth, this.day);
   }
 
   public TLocalDate plusWeeks(long weeksToAdd) {
 
-    return plusDays(Math.multiplyExact(weeksToAdd, 7));
+    return plusDays(TMath.multiplyExact(weeksToAdd, 7));
   }
 
   public TLocalDate plusDays(long daysToAdd) {
@@ -585,7 +585,7 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
     if (daysToAdd == 0) {
       return this;
     }
-    long mjDay = Math.addExact(toEpochDay(), daysToAdd);
+    long mjDay = TMath.addExact(toEpochDay(), daysToAdd);
     return TLocalDate.ofEpochDay(mjDay);
   }
 
@@ -695,7 +695,7 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
     }
     long years = totalMonths / 12; // safe
     int months = (int) (totalMonths % 12); // safe
-    return TPeriod.of(Math.toIntExact(years), months, days);
+    return TPeriod.of(TMath.toIntExact(years), months, days);
   }
 
   @Override
@@ -843,7 +843,7 @@ public final class TLocalDate implements TChronoLocalDate, TSerializable {
     int yearValue = this.year;
     int monthValue = this.month;
     int dayValue = this.day;
-    int absYear = Math.abs(yearValue);
+    int absYear = TMath.abs(yearValue);
     StringBuilder buf = new StringBuilder(10);
     if (absYear < 1000) {
       if (yearValue < 0) {

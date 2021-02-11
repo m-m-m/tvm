@@ -78,6 +78,7 @@ import org.teavm.classlib.java.time.TDateTimeException;
 import org.teavm.classlib.java.time.TDayOfWeek;
 import org.teavm.classlib.java.time.TInstant;
 import org.teavm.classlib.java.time.TLocalDate;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TZoneId;
 import org.teavm.classlib.java.time.format.TResolverStyle;
 import org.teavm.classlib.java.time.temporal.TChronoField;
@@ -287,7 +288,7 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
         int maxJapanese = maxIso - eras[eras.length - 1].startDate().getYear() + 1;
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < eras.length; i++) {
-          min = Math.min(min, eras[i].endDate().getYear() - eras[i].startDate().getYear() + 1);
+          min = TMath.min(min, eras[i].endDate().getYear() - eras[i].startDate().getYear() + 1);
         }
         return TValueRange.of(1, 6, min, maxJapanese);
       }
@@ -298,7 +299,7 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
         TJapaneseEra[] eras = TJapaneseEra.values();
         int min = 366;
         for (int i = 0; i < eras.length; i++) {
-          min = Math.min(min, eras[i].startDate().lengthOfYear() - eras[i].startDate().getDayOfYear() + 1);
+          min = TMath.min(min, eras[i].startDate().lengthOfYear() - eras[i].startDate().getDayOfYear() + 1);
         }
         return TValueRange.of(1, min, 366);
       }
@@ -321,8 +322,8 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
       if (resolverStyle != TResolverStyle.LENIENT) {
         PROLEPTIC_MONTH.checkValidValue(prolepticMonth);
       }
-      updateResolveMap(fieldValues, MONTH_OF_YEAR, Math.floorMod(prolepticMonth, 12) + 1);
-      updateResolveMap(fieldValues, YEAR, Math.floorDiv(prolepticMonth, 12));
+      updateResolveMap(fieldValues, MONTH_OF_YEAR, TMath.floorMod(prolepticMonth, 12) + 1);
+      updateResolveMap(fieldValues, YEAR, TMath.floorDiv(prolepticMonth, 12));
     }
 
     // eras
@@ -357,14 +358,14 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
         if (fieldValues.containsKey(DAY_OF_MONTH)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
+            long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
             return date(y, 1, 1).plusMonths(months).plusDays(days);
           } else {
             int moy = range(MONTH_OF_YEAR).checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR), MONTH_OF_YEAR);
             int dom = range(DAY_OF_MONTH).checkValidIntValue(fieldValues.remove(DAY_OF_MONTH), DAY_OF_MONTH);
             if (resolverStyle == TResolverStyle.SMART && dom > 28) {
-              dom = Math.min(dom, date(y, moy, 1).lengthOfMonth());
+              dom = TMath.min(dom, date(y, moy, 1).lengthOfMonth());
             }
             return date(y, moy, dom);
           }
@@ -373,9 +374,9 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
           if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_MONTH)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_MONTH), 1);
               return date(y, 1, 1).plus(months, MONTHS).plus(weeks, WEEKS).plus(days, DAYS);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -390,9 +391,9 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
           if (fieldValues.containsKey(DAY_OF_WEEK)) {
             int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
             if (resolverStyle == TResolverStyle.LENIENT) {
-              long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-              long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
-              long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+              long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+              long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_MONTH), 1);
+              long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
               return date(y, 1, 1).plus(months, MONTHS).plus(weeks, WEEKS).plus(days, DAYS);
             }
             int moy = MONTH_OF_YEAR.checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR));
@@ -409,7 +410,7 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
       if (fieldValues.containsKey(DAY_OF_YEAR)) {
         int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
         if (resolverStyle == TResolverStyle.LENIENT) {
-          long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+          long days = TMath.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
           return dateYearDay(y, 1).plusDays(days);
         }
         int doy = DAY_OF_YEAR.checkValidIntValue(fieldValues.remove(DAY_OF_YEAR));
@@ -419,8 +420,8 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
         if (fieldValues.containsKey(ALIGNED_DAY_OF_WEEK_IN_YEAR)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
             return date(y, 1, 1).plus(weeks, WEEKS).plus(days, DAYS);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
@@ -434,8 +435,8 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
         if (fieldValues.containsKey(DAY_OF_WEEK)) {
           int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
           if (resolverStyle == TResolverStyle.LENIENT) {
-            long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
-            long days = Math.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
+            long weeks = TMath.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+            long days = TMath.subtractExact(fieldValues.remove(DAY_OF_WEEK), 1);
             return date(y, 1, 1).plus(weeks, WEEKS).plus(days, DAYS);
           }
           int aw = ALIGNED_WEEK_OF_YEAR.checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR));
@@ -456,8 +457,8 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
 
     if (resolverStyle == TResolverStyle.LENIENT) {
       int y = era.startDate().getYear() + yoe - 1;
-      long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
-      long days = Math.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
+      long months = TMath.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
+      long days = TMath.subtractExact(fieldValues.remove(DAY_OF_MONTH), 1);
       return date(y, 1, 1).plus(months, MONTHS).plus(days, DAYS);
     }
     int moy = range(MONTH_OF_YEAR).checkValidIntValue(fieldValues.remove(MONTH_OF_YEAR), MONTH_OF_YEAR);
@@ -468,12 +469,12 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
       }
       int y = era.startDate().getYear() + yoe - 1;
       if (dom > 28) {
-        dom = Math.min(dom, date(y, moy, 1).lengthOfMonth());
+        dom = TMath.min(dom, date(y, moy, 1).lengthOfMonth());
       }
       TJapaneseDate jd = date(y, moy, dom);
       if (jd.getEra() != era) {
         // ensure within calendar year of change
-        if (Math.abs(jd.getEra().getValue() - era.getValue()) > 1) {
+        if (TMath.abs(jd.getEra().getValue() - era.getValue()) > 1) {
           throw new TDateTimeException("Invalid Era/YearOfEra: " + era + " " + yoe);
         }
         if (jd.get(YEAR_OF_ERA) != 1 && yoe != 1) {
@@ -490,7 +491,7 @@ public final class TJapaneseChronology extends TAbstractChronology implements TS
 
     if (resolverStyle == TResolverStyle.LENIENT) {
       int y = era.startDate().getYear() + yoe - 1;
-      long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+      long days = TMath.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
       return dateYearDay(y, 1).plus(days, DAYS);
     }
     int doy = range(DAY_OF_YEAR).checkValidIntValue(fieldValues.remove(DAY_OF_YEAR), DAY_OF_YEAR);

@@ -16,7 +16,7 @@
 
   <properties>
     <mmm.repository>tvm</mmm.repository>
-    <teavm.version>0.7.0-dev-1169</teavm.version>
+    <teavm.version>0.7.0-dev-1185</teavm.version>
   </properties>
 
   <modules>
@@ -45,6 +45,26 @@
         <groupId>org.teavm</groupId>
         <artifactId>teavm-classlib</artifactId>
         <version>${teavm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.teavm</groupId>
+        <artifactId>teavm-jso-apis</artifactId>
+        <version>${teavm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.teavm</groupId>
+        <artifactId>teavm-extras-slf4j</artifactId>
+        <version>${teavm.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>4.0.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

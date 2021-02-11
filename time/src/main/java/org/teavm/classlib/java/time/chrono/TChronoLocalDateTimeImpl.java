@@ -52,6 +52,7 @@ import java.util.Objects;
 
 import org.teavm.classlib.java.io.TSerializable;
 import org.teavm.classlib.java.time.TLocalTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TZoneId;
 import org.teavm.classlib.java.time.temporal.TChronoField;
 import org.teavm.classlib.java.time.temporal.TChronoUnit;
@@ -269,8 +270,8 @@ final class TChronoLocalDateTimeImpl<D extends TChronoLocalDate> implements TChr
         (hours % HOURS_PER_DAY) * NANOS_PER_HOUR; // max 86400000000000
     long curNoD = this.time.toNanoOfDay(); // max 86400000000000
     totNanos = totNanos + curNoD; // total 432000000000000
-    totDays += Math.floorDiv(totNanos, NANOS_PER_DAY);
-    long newNoD = Math.floorMod(totNanos, NANOS_PER_DAY);
+    totDays += TMath.floorDiv(totNanos, NANOS_PER_DAY);
+    long newNoD = TMath.floorMod(totNanos, NANOS_PER_DAY);
     TLocalTime newTime = (newNoD == curNoD ? this.time : TLocalTime.ofNanoOfDay(newNoD));
     return with(newDate.plus(totDays, TChronoUnit.DAYS), newTime);
   }
@@ -292,28 +293,28 @@ final class TChronoLocalDateTimeImpl<D extends TChronoLocalDate> implements TChr
         long amount = end.getLong(EPOCH_DAY) - this.date.getLong(EPOCH_DAY);
         switch (f) {
           case NANOS:
-            amount = Math.multiplyExact(amount, NANOS_PER_DAY);
+            amount = TMath.multiplyExact(amount, NANOS_PER_DAY);
             break;
           case MICROS:
-            amount = Math.multiplyExact(amount, MICROS_PER_DAY);
+            amount = TMath.multiplyExact(amount, MICROS_PER_DAY);
             break;
           case MILLIS:
-            amount = Math.multiplyExact(amount, MILLIS_PER_DAY);
+            amount = TMath.multiplyExact(amount, MILLIS_PER_DAY);
             break;
           case SECONDS:
-            amount = Math.multiplyExact(amount, SECONDS_PER_DAY);
+            amount = TMath.multiplyExact(amount, SECONDS_PER_DAY);
             break;
           case MINUTES:
-            amount = Math.multiplyExact(amount, MINUTES_PER_DAY);
+            amount = TMath.multiplyExact(amount, MINUTES_PER_DAY);
             break;
           case HOURS:
-            amount = Math.multiplyExact(amount, HOURS_PER_DAY);
+            amount = TMath.multiplyExact(amount, HOURS_PER_DAY);
             break;
           case HALF_DAYS:
-            amount = Math.multiplyExact(amount, 2);
+            amount = TMath.multiplyExact(amount, 2);
             break;
         }
-        return Math.addExact(amount, this.time.until(end.toLocalTime(), unit));
+        return TMath.addExact(amount, this.time.until(end.toLocalTime(), unit));
       }
       TChronoLocalDate endDate = end.toLocalDate();
       if (end.toLocalTime().isBefore(this.time)) {

@@ -177,8 +177,8 @@ public final class TLocalDateTime
 
     Objects.requireNonNull(offset, "offset");
     long localSecond = epochSecond + offset.getTotalSeconds(); // overflow caught later
-    long localEpochDay = Math.floorDiv(localSecond, SECONDS_PER_DAY);
-    int secsOfDay = Math.floorMod(localSecond, SECONDS_PER_DAY);
+    long localEpochDay = TMath.floorDiv(localSecond, SECONDS_PER_DAY);
+    int secsOfDay = TMath.floorMod(localSecond, SECONDS_PER_DAY);
     TLocalDate date = TLocalDate.ofEpochDay(localEpochDay);
     TLocalTime time = TLocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
     return new TLocalDateTime(date, time);
@@ -564,8 +564,8 @@ public final class TLocalDateTime
         (hours % HOURS_PER_DAY) * NANOS_PER_HOUR; // max 86400000000000
     long curNoD = this.time.toNanoOfDay(); // max 86400000000000
     totNanos = totNanos * sign + curNoD; // total 432000000000000
-    totDays += Math.floorDiv(totNanos, NANOS_PER_DAY);
-    long newNoD = Math.floorMod(totNanos, NANOS_PER_DAY);
+    totDays += TMath.floorDiv(totNanos, NANOS_PER_DAY);
+    long newNoD = TMath.floorMod(totNanos, NANOS_PER_DAY);
     TLocalTime newTime = (newNoD == curNoD ? this.time : TLocalTime.ofNanoOfDay(newNoD));
     return with(newDate.plusDays(totDays), newTime);
   }
@@ -605,26 +605,26 @@ public final class TLocalDateTime
         long amount = daysUntil;
         switch (f) {
           case NANOS:
-            amount = Math.multiplyExact(amount, NANOS_PER_DAY);
-            return Math.addExact(amount, timeUntil);
+            amount = TMath.multiplyExact(amount, NANOS_PER_DAY);
+            return TMath.addExact(amount, timeUntil);
           case MICROS:
-            amount = Math.multiplyExact(amount, MICROS_PER_DAY);
-            return Math.addExact(amount, timeUntil / 1000);
+            amount = TMath.multiplyExact(amount, MICROS_PER_DAY);
+            return TMath.addExact(amount, timeUntil / 1000);
           case MILLIS:
-            amount = Math.multiplyExact(amount, MILLIS_PER_DAY);
-            return Math.addExact(amount, timeUntil / 1000000);
+            amount = TMath.multiplyExact(amount, MILLIS_PER_DAY);
+            return TMath.addExact(amount, timeUntil / 1000000);
           case SECONDS:
-            amount = Math.multiplyExact(amount, SECONDS_PER_DAY);
-            return Math.addExact(amount, timeUntil / NANOS_PER_SECOND);
+            amount = TMath.multiplyExact(amount, SECONDS_PER_DAY);
+            return TMath.addExact(amount, timeUntil / NANOS_PER_SECOND);
           case MINUTES:
-            amount = Math.multiplyExact(amount, MINUTES_PER_DAY);
-            return Math.addExact(amount, timeUntil / NANOS_PER_MINUTE);
+            amount = TMath.multiplyExact(amount, MINUTES_PER_DAY);
+            return TMath.addExact(amount, timeUntil / NANOS_PER_MINUTE);
           case HOURS:
-            amount = Math.multiplyExact(amount, HOURS_PER_DAY);
-            return Math.addExact(amount, timeUntil / NANOS_PER_HOUR);
+            amount = TMath.multiplyExact(amount, HOURS_PER_DAY);
+            return TMath.addExact(amount, timeUntil / NANOS_PER_HOUR);
           case HALF_DAYS:
-            amount = Math.multiplyExact(amount, 2);
-            return Math.addExact(amount, timeUntil / (NANOS_PER_HOUR * 12));
+            amount = TMath.multiplyExact(amount, 2);
+            return TMath.addExact(amount, timeUntil / (NANOS_PER_HOUR * 12));
         }
         throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
       }

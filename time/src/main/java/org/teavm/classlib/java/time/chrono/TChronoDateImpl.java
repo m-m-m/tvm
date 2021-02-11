@@ -54,6 +54,7 @@ import org.teavm.classlib.java.io.TSerializable;
 import org.teavm.classlib.java.time.TDateTimeException;
 import org.teavm.classlib.java.time.TLocalDate;
 import org.teavm.classlib.java.time.TLocalTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.temporal.TChronoUnit;
 import org.teavm.classlib.java.time.temporal.TTemporal;
 import org.teavm.classlib.java.time.temporal.TTemporalUnit;
@@ -74,17 +75,17 @@ abstract class TChronoLocalDateImpl<D extends TChronoLocalDate> implements TChro
         case DAYS:
           return plusDays(amountToAdd);
         case WEEKS:
-          return plusDays(Math.multiplyExact(amountToAdd, 7));
+          return plusDays(TMath.multiplyExact(amountToAdd, 7));
         case MONTHS:
           return plusMonths(amountToAdd);
         case YEARS:
           return plusYears(amountToAdd);
         case DECADES:
-          return plusYears(Math.multiplyExact(amountToAdd, 10));
+          return plusYears(TMath.multiplyExact(amountToAdd, 10));
         case CENTURIES:
-          return plusYears(Math.multiplyExact(amountToAdd, 100));
+          return plusYears(TMath.multiplyExact(amountToAdd, 100));
         case MILLENNIA:
-          return plusYears(Math.multiplyExact(amountToAdd, 1000));
+          return plusYears(TMath.multiplyExact(amountToAdd, 1000));
         // case ERAS: throw new TDateTimeException("Unable to add era, standard calendar system only has one
         // era");
         // case FOREVER: return (period == 0 ? this : (period > 0 ? TLocalDate.MAX_DATE : TLocalDate.MIN_DATE));
@@ -101,7 +102,7 @@ abstract class TChronoLocalDateImpl<D extends TChronoLocalDate> implements TChro
 
   TChronoLocalDateImpl<D> plusWeeks(long weeksToAdd) {
 
-    return plusDays(Math.multiplyExact(weeksToAdd, 7));
+    return plusDays(TMath.multiplyExact(weeksToAdd, 7));
   }
 
   abstract TChronoLocalDateImpl<D> plusDays(long daysToAdd);

@@ -207,15 +207,15 @@ public final class TZoneOffset extends TZoneId
     } else if ((minutes > 0 && seconds < 0) || (minutes < 0 && seconds > 0)) {
       throw new TDateTimeException("Zone offset minutes and seconds must have the same sign");
     }
-    if (Math.abs(minutes) > 59) {
+    if (TMath.abs(minutes) > 59) {
       throw new TDateTimeException(
-          "Zone offset minutes not in valid range: abs(value) " + Math.abs(minutes) + " is not in the range 0 to 59");
+          "Zone offset minutes not in valid range: abs(value) " + TMath.abs(minutes) + " is not in the range 0 to 59");
     }
-    if (Math.abs(seconds) > 59) {
+    if (TMath.abs(seconds) > 59) {
       throw new TDateTimeException(
-          "Zone offset seconds not in valid range: abs(value) " + Math.abs(seconds) + " is not in the range 0 to 59");
+          "Zone offset seconds not in valid range: abs(value) " + TMath.abs(seconds) + " is not in the range 0 to 59");
     }
-    if (Math.abs(hours) == 18 && (Math.abs(minutes) > 0 || Math.abs(seconds) > 0)) {
+    if (TMath.abs(hours) == 18 && (TMath.abs(minutes) > 0 || TMath.abs(seconds) > 0)) {
       throw new TDateTimeException("Zone offset not in valid range: -18:00 to +18:00");
     }
   }
@@ -227,7 +227,7 @@ public final class TZoneOffset extends TZoneId
 
   public static TZoneOffset ofTotalSeconds(int totalSeconds) {
 
-    if (Math.abs(totalSeconds) > MAX_SECONDS) {
+    if (TMath.abs(totalSeconds) > MAX_SECONDS) {
       throw new TDateTimeException("Zone offset not in valid range: -18:00 to +18:00");
     }
     if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
@@ -257,7 +257,7 @@ public final class TZoneOffset extends TZoneId
     if (totalSeconds == 0) {
       return "Z";
     } else {
-      int absTotalSeconds = Math.abs(totalSeconds);
+      int absTotalSeconds = TMath.abs(totalSeconds);
       StringBuilder buf = new StringBuilder();
       int absHours = absTotalSeconds / SECONDS_PER_HOUR;
       int absMinutes = (absTotalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;

@@ -69,6 +69,7 @@ import org.teavm.classlib.java.time.TDateTimeException;
 import org.teavm.classlib.java.time.TDayOfWeek;
 import org.teavm.classlib.java.time.TLocalDate;
 import org.teavm.classlib.java.time.TLocalTime;
+import org.teavm.classlib.java.time.TMath;
 import org.teavm.classlib.java.time.TZoneId;
 import org.teavm.classlib.java.time.temporal.TChronoField;
 import org.teavm.classlib.java.time.temporal.TTemporalAccessor;
@@ -485,7 +486,7 @@ public final class THijrahDate extends TChronoLocalDateImpl<THijrahDate> {
     if (years == 0) {
       return this;
     }
-    int newYear = Math.addExact(this.yearOfEra, (int) years);
+    int newYear = TMath.addExact(this.yearOfEra, (int) years);
     return THijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
   }
 
@@ -501,9 +502,9 @@ public final class THijrahDate extends TChronoLocalDateImpl<THijrahDate> {
     newMonth = newMonth % 12;
     while (newMonth < 0) {
       newMonth += 12;
-      years = Math.subtractExact(years, 1);
+      years = TMath.subtractExact(years, 1);
     }
-    int newYear = Math.addExact(this.yearOfEra, years);
+    int newYear = TMath.addExact(this.yearOfEra, years);
     return THijrahDate.of(this.era, newYear, newMonth + 1, this.dayOfMonth);
   }
 
@@ -576,7 +577,7 @@ public final class THijrahDate extends TChronoLocalDateImpl<THijrahDate> {
     int cycleNumber = (prolepticYear - 1) / 30; // 0-based.
     int yearInCycle = (prolepticYear - 1) % 30; // 0-based.
 
-    int dayInCycle = getAdjustedCycle(cycleNumber)[Math.abs(yearInCycle)].intValue();
+    int dayInCycle = getAdjustedCycle(cycleNumber)[TMath.abs(yearInCycle)].intValue();
 
     if (yearInCycle < 0) {
       dayInCycle = -dayInCycle;

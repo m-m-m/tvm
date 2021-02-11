@@ -335,13 +335,13 @@ public final class TYearMonth implements TTemporal, TTemporalAdjuster, TComparab
         case YEARS:
           return plusYears(amountToAdd);
         case DECADES:
-          return plusYears(Math.multiplyExact(amountToAdd, 10));
+          return plusYears(TMath.multiplyExact(amountToAdd, 10));
         case CENTURIES:
-          return plusYears(Math.multiplyExact(amountToAdd, 100));
+          return plusYears(TMath.multiplyExact(amountToAdd, 100));
         case MILLENNIA:
-          return plusYears(Math.multiplyExact(amountToAdd, 1000));
+          return plusYears(TMath.multiplyExact(amountToAdd, 1000));
         case ERAS:
-          return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
+          return with(ERA, TMath.addExact(getLong(ERA), amountToAdd));
       }
       throw new TUnsupportedTemporalTypeException("Unsupported unit: " + unit);
     }
@@ -364,8 +364,8 @@ public final class TYearMonth implements TTemporal, TTemporalAdjuster, TComparab
     }
     long monthCount = this.year * 12L + (this.month - 1);
     long calcMonths = monthCount + monthsToAdd; // safe overflow
-    int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
-    int newMonth = Math.floorMod(calcMonths, 12) + 1;
+    int newYear = YEAR.checkValidIntValue(TMath.floorDiv(calcMonths, 12));
+    int newMonth = TMath.floorMod(calcMonths, 12) + 1;
     return with(newYear, newMonth);
   }
 
@@ -495,7 +495,7 @@ public final class TYearMonth implements TTemporal, TTemporalAdjuster, TComparab
   @Override
   public String toString() {
 
-    int absYear = Math.abs(this.year);
+    int absYear = TMath.abs(this.year);
     StringBuilder buf = new StringBuilder(9);
     if (absYear < 1000) {
       if (this.year < 0) {

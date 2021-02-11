@@ -241,7 +241,7 @@ public final class TMonthDay implements TTemporalAccessor, TTemporalAdjuster, TC
     if (month.getValue() == this.month) {
       return this;
     }
-    int day = Math.min(this.day, month.maxLength());
+    int day = TMath.min(this.day, month.maxLength());
     return new TMonthDay(month.getValue(), day);
   }
 
@@ -270,7 +270,7 @@ public final class TMonthDay implements TTemporalAccessor, TTemporalAdjuster, TC
       throw new TDateTimeException("Adjustment only supported on ISO date-time");
     }
     temporal = temporal.with(MONTH_OF_YEAR, this.month);
-    return temporal.with(DAY_OF_MONTH, Math.min(temporal.range(DAY_OF_MONTH).getMaximum(), this.day));
+    return temporal.with(DAY_OF_MONTH, TMath.min(temporal.range(DAY_OF_MONTH).getMaximum(), this.day));
   }
 
   public TLocalDate atYear(int year) {
