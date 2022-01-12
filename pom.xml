@@ -17,7 +17,7 @@
   <properties>
     <mmm.repository>tvm</mmm.repository>
     <revision>0-SNAPSHOT</revision>
-    <teavm.version>0.7.0-dev-1196</teavm.version>
+    <teavm.version>0.7.0-dev-1200</teavm.version>
   </properties>
 
   <modules>
