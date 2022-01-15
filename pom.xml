@@ -48,6 +48,11 @@
         <version>${teavm.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.teavm</groupId>
+        <artifactId>teavm-junit</artifactId>
+        <version>${teavm.version}</version>
+      </dependency>
+      <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
         <version>4.0.3</version>
