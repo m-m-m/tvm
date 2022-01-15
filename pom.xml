@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.github.m-m-m</groupId>
     <artifactId>mmm</artifactId>
-    <version>12</version>
+    <version>14</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
   <artifactId>mmm-tvm-parent</artifactId>
@@ -27,16 +27,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>mmm-tvm-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>mmm-tvm-time</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.teavm</groupId>
         <artifactId>teavm-metaprogramming-impl</artifactId>
@@ -66,6 +56,17 @@
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>4.0.1</version>
+      </dependency>
+      <!-- own modules -->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mmm-tvm-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mmm-tvm-time</artifactId>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
