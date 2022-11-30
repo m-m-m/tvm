@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.github.m-m-m</groupId>
     <artifactId>mmm</artifactId>
-    <version>14</version>
+    <version>17</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
   <artifactId>mmm-tvm-parent</artifactId>
@@ -17,7 +17,7 @@
   <properties>
     <mmm.repository>tvm</mmm.repository>
     <revision>0-SNAPSHOT</revision>
-    <teavm.version>0.7.0-dev-1200</teavm.version>
+    <teavm.version>0.7.0-dev-1209</teavm.version>
   </properties>
 
   <modules>
