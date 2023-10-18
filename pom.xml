@@ -16,7 +16,7 @@
 
   <properties>
     <mmm.repository>tvm</mmm.repository>
-    <teavm.version>0.7.0-dev-1209</teavm.version>
+    <teavm.version>0.9.0-dev-15</teavm.version>
   </properties>
 
   <modules>
