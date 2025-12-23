@@ -6,6 +6,7 @@ image:https://github.com/m-m-m/tvm/actions/workflows/build.yml/badge.svg["Build 
 == mmm-tvm
 
 image:https://img.shields.io/maven-central/v/io.github.m-m-m/mmm-tvm.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:io.github.m-m-m]
+image:https://javadoc.io/badge2/io.github.m-m-m/mmm-tvm/javadoc.svg["JavaDoc",link=https://javadoc.io/doc/io.github.m-m-m/mmm-tvm]
 
 The library `mmm-tvm` provides extensions to the classlib of https://teavm.org[TeaVM] to fill gaps and lack of support.
 Examples are https://github.com/konsoletyper/teavm/issues/451[#451: Support for java.time] or https://github.com/konsoletyper/teavm/issues/445[#445: Support for ConcurrentHashMap].
